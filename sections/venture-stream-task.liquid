@@ -1,0 +1,138 @@
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+{% comment %} Would typically adjust theme settings to set typography or adjust theme.liquid {% endcomment %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+{% comment %} Would typically use theme's existing lib for sliders for this demo I'm just using Swiper and all CSS / JS is just included in the section file for ease of sharing {% endcomment %}
+
+
+<style>
+    .container{
+        max-width: 1800px;
+        margin-left: auto;
+        padding: 3% 0% 3% 3%;
+    }
+    
+    .swiper-slide img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .swiper-slide:hover img {
+    transform: scale(1.05);
+    }
+
+    .quick-view{
+        opacity: 0%;
+        position: absolute;
+        bottom: 30px;
+        right: 50px;
+        transition: all 0.3s ease;
+    }
+
+    .swiper-slide:hover .quick-view {
+        right: 30px;
+        opacity: 100%;
+        background: white;
+        padding: 10px;
+        border-radius: 100%;
+    }
+
+    .swiper-slide {
+    text-decoration: none !important;
+    }
+
+    .swiper-slide h3{
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+
+    .product-image__container{
+        position: relative;
+    }
+ 
+
+
+</style>
+
+
+<section class="container">
+    <h2>{{ section.settings.title }}</h2>
+    <div class="swiper" id="swiper--{{ section.id }}">
+        <div class="swiper-wrapper">
+            {% if section.settings.collection != blank %}
+                {% for product in section.settings.collection.products %}
+                    <a class="product swiper-slide" href="{{ product.url }}">
+                            <div class="product-image__container">
+                                {{ product.featured_image | image_url: width: 500 
+                                | image_tag: loading: 'lazy' | alt: product.title }}
+                                <!-- Render the SVG icon using image_tag -->
+                                <svg class="quick-view" xmlns="http://www.w3.org/2000/svg" width="10.293" height="9.794" viewBox="0 0 10.293 9.794">
+                                    <path id="Arrow" d="M4.865.53,9.232,4.9,4.865,9.263M9,4.9H0" transform="translate(0 0)" fill="none" stroke="#1f1f1e" stroke-width="1.5"/>
+                                </svg>
+                            </div>
+                            <h3>{{ product.title }}</h3>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <p>Please select a collection in the theme editor.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    var swiper = new Swiper("#swiper--{{ section.id }}", {
+        slidesPerView: 1.5,
+        spaceBetween: 30,
+        loop: true, 
+        breakpoints: {
+            // when window width is >= 320px
+            320: {
+                slidesPerView: 1.5,
+            },
+            // when window width is >= 480px
+            480: {
+                slidesPerView: 2.2,
+            },
+            // when window width is >= 768px
+            768: {
+                slidesPerView: 3.2,
+            },
+            // when window width is >= 1024px
+            1024: {
+                slidesPerView: 4.3,
+            },
+        },
+    });
+</script>
+
+{% schema %}
+{
+  "name": "slider-collection-task",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+        "type": "text",
+        "id": "title",
+        "label": "Section Heading",
+        "default": "Section Title"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "slider-collection-task"
+    }
+  ]
+}
+{% endschema %}
